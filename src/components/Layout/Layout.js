@@ -1,4 +1,5 @@
 import s from "./Layout.module.css";
+import classNames from "classnames";
 
 const Layout = ({ title, urlBg, colorBg = "#e2e2e2", children }) => {
   const back = urlBg && { backgroundImage: `url(${urlBg})` } ? { backgroundImage: `url(${urlBg})` } : { backgroundColor: colorBg };
@@ -10,7 +11,7 @@ const Layout = ({ title, urlBg, colorBg = "#e2e2e2", children }) => {
             <h3>{title}</h3>
             <span className={s.separator}></span>
           </div>
-          <div className={`${s.desc} ${s.full}`}>{children}</div>
+          <div className={classNames(s.desc, s.full)}>{children}</div>
         </article>
       </div>
     </section>
