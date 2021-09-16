@@ -1,0 +1,17 @@
+.container {
+  margin: 0px auto;
+  width: 100%;
+  background: #181d23;
+}
+
+.contact {
+  margin: 0px auto;
+  width: 50%;
+  color: #fafafa;
+  text-align: center;
+  font-size: 30px;
+}
+
+.contact span {
+  font-weight: bold;
+}
