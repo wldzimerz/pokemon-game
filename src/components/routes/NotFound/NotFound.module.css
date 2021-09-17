@@ -1,0 +1,10 @@
+.notfound {
+  background: rgb(115, 28, 28);
+  line-height: 50px;
+  margin: 0px auto;
+  width: 50%;
+  color: #fafafa;
+  text-align: center;
+  font-size: 30px;
+  width: 100%;
+}

@@ -1,21 +1,15 @@
 import Header from "../../Header/Header";
 import Layout from "../../Layout/Layout";
-import Footer from "../../Footer/Footer";
-import MenuHeader from "../../Header/MenuHeader/MenuHeader";
 import PokemonCard from "../../Pokemon Card/PokemonCard";
 import background2 from "../../../assets/bg1.jpg";
 import background1 from "../../../assets/bg3.jpg";
 import POKEMONS from "../../../data/pokemons.json";
 import s from "./HomePage.module.css";
 
-const HomePage = ({ onChangePage }) => {
-  const handleClickButton = (page) => {
-    onChangePage && onChangePage(page);
-  };
+const HomePage = () => {
   return (
     <>
-      <MenuHeader />
-      <Header title="Pokemon game" descr="This is simple triple triad card game" onClickButton={handleClickButton} />
+      <Header title="Pokemon game" descr="This is simple triple triad card game" />
       <Layout title="Rules" urlBg={background1}>
         <p>
           In the game two players face off against one another, one side playing as "blue", the other as "red" on a 3x3 grid. Each player has five
@@ -38,7 +32,6 @@ const HomePage = ({ onChangePage }) => {
           player's color instead.
         </p>
       </Layout>
-      <Footer />
     </>
   );
 };
