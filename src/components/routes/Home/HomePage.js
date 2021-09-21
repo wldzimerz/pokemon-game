@@ -1,10 +1,7 @@
 import Header from "../../Header/Header";
 import Layout from "../../Layout/Layout";
-import PokemonCard from "../../Pokemon Card/PokemonCard";
 import background2 from "../../../assets/bg1.jpg";
 import background1 from "../../../assets/bg3.jpg";
-import POKEMONS from "../../../data/pokemons.json";
-import s from "./HomePage.module.css";
 
 const HomePage = () => {
   return (
@@ -15,13 +12,6 @@ const HomePage = () => {
           In the game two players face off against one another, one side playing as "blue", the other as "red" on a 3x3 grid. Each player has five
           cards in a hand and the aim is to capture the opponent's cards by turning them into the player's own color of red or blue.
         </p>
-      </Layout>
-      <Layout title="Cards" colorBg="#e2e2e2">
-        <div className={s.flex}>
-          {POKEMONS.map((item) => (
-            <PokemonCard key={item.id} name={item.name} type={item.type} img={item.img} values={item.values} id={item.id} />
-          ))}
-        </div>
       </Layout>
       <Layout title="thirdLayout title" urlBg={background2}>
         <p>

@@ -4,3 +4,8 @@
   align-items: center;
   flex-wrap: wrap;
 }
+
+.add {
+  text-align: center;
+  margin: 0px auto 20px;
+}
