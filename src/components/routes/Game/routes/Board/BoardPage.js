@@ -23,10 +23,11 @@ const counterWin = (board, player1, player2) => {
 };
 
 const BoardPage = () => {
-  const { pokemons } = useContext(PokemonContext);
+  const pokemonsContext = useContext(PokemonContext);
+  // const { pokemons, getPlayer2Cards, setWinner } = useContext(PokemonContext);
   const [board, setBoard] = useState([]);
   const [player1, setPlayer1] = useState(() => {
-    return Object.values(pokemons).map((item) => ({
+    return Object.values(pokemonsContext.pokemons).map((item) => ({
       ...item,
       possession: "blue",
     }));
@@ -34,16 +35,12 @@ const BoardPage = () => {
   const [player2, setPlayer2] = useState([]);
   const [choiseCard, setChoiseCard] = useState(null);
   const [steps, setSteps] = useState(0);
-
   const history = useHistory();
-  console.log("board: ", board);
-  console.log("player2: ", player2);
 
   useEffect(() => {
     const fetchData = async () => {
       const boardResponse = await fetch("https://reactmarathon-api.netlify.app/api/board");
       const boardRequest = await boardResponse.json();
-      setBoard(boardRequest.data);
 
       const player2Response = await fetch("https://reactmarathon-api.netlify.app/api/create-player");
       const player2Request = await player2Response.json();
@@ -54,12 +51,17 @@ const BoardPage = () => {
           possession: "red",
         }));
       });
-      // setBoard(player2Request.data);
+
+      await pokemonsContext.getPlayer2Cards(player2Request.data);
+      setBoard(boardRequest.data);
+
+      // console.log("player2: ", player2Request.data);
+      // console.log("pokemons2Board: ", pokemons2);
     };
     fetchData();
   }, []);
 
-  if (Object.keys(pokemons).length === 0) {
+  if (Object.keys(pokemonsContext.pokemons).length === 0) {
     history.replace("/game");
   }
 
@@ -105,12 +107,15 @@ const BoardPage = () => {
 
       if (count1 > count2) {
         alert("WIN");
+        pokemonsContext.setWinner("player1");
       } else if (count1 < count2) {
         alert("LOSE");
+        pokemonsContext.setWinner("player2");
       } else {
         alert("DRAW");
+        pokemonsContext.setWinner();
       }
-      history.replace("game/finish");
+      history.replace("/game/finish");
     }
   }, [steps]);
 
