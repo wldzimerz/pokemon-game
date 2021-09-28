@@ -1,0 +1,17 @@
+.flex {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 50px auto;
+  padding: 0 5vw;
+}
+
+.card {
+  width: 15vw;
+  height: 40vh;
+  cursor: pointer;
+}
+
+.button {
+  text-align: center;
+  margin: 25px auto;
+}

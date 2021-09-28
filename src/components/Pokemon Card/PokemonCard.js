@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import s from "./PokemonCard.module.css";
 
-const PokemonCard = ({ key, className, name, type, img, values, minimize, id, onClickCard, isActive, isSelected }) => {
+const PokemonCard = ({ key, className, name, type, img, values, minimize, id, onClickCard, isActive, isSelected, possession }) => {
   const handleClick = () => {
     onClickCard && onClickCard(key);
   };
@@ -9,7 +9,7 @@ const PokemonCard = ({ key, className, name, type, img, values, minimize, id, on
     <div className={classNames(className, s.pokemonCard, { [s.active]: isActive, [s.selected]: isSelected })} onClick={handleClick}>
       <div className={s.cardFront}>
         <div className={classNames(s.wrap, s.front)}>
-          <div className={classNames(s.pokemon, s[type])}>
+          <div className={classNames(s.pokemon, s[type], s[possession])}>
             <div className={s.values}>
               <div className={classNames(s.count, s.top)}>{values.top}</div>
               <div className={classNames(s.count, s.right)}>{values.right}</div>
