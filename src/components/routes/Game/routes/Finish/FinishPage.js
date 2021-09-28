@@ -9,16 +9,19 @@ import s from "./FinishPage.module.css";
 
 const FinishPage = () => {
   const pokemonsContext = useContext(PokemonContext);
-  // const { pokemons, pokemons2, cleanContext, winner } = useContext(PokemonContext);
   const firebase = useContext(FireBaseContext);
   const [wonPokemon, setWonPokemon] = useState({});
   const history = useHistory();
 
   const handleEndGame = () => {
-    history.push("/game");
-    firebase.addPokemon(wonPokemon);
-    setWonPokemon({});
-    pokemonsContext.cleanContext();
+    if (Object.keys(wonPokemon).length !== 0) {
+      firebase.addPokemon(wonPokemon);
+      setWonPokemon({});
+      pokemonsContext.cleanContext();
+      history.push("/game");
+    } else {
+      alert("Choose a pokemon!");
+    }
   };
 
   const addWonPokemon = (item) => {
@@ -63,7 +66,6 @@ const FinishPage = () => {
               onClickCard={() => {
                 if (pokemonsContext.winner === "player1") {
                   addWonPokemon(item);
-                  console.log(item.isSelected);
                 }
               }}
             />
