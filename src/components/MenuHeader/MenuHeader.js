@@ -3,7 +3,7 @@ import Menu from "./Menu/Menu";
 import Navbar from "./Navbar/Navbar";
 
 const MenuHeader = ({ bgActive }) => {
-  const [isActive, setActive] = useState(null);
+  const [isActive, setActive] = useState(false);
 
   const handleShowMenu = () => {
     setActive((prevState) => !prevState);

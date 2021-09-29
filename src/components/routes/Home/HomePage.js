@@ -2,11 +2,18 @@ import Header from "../../Header/Header";
 import Layout from "../../Layout/Layout";
 import background2 from "../../../assets/bg1.jpg";
 import background1 from "../../../assets/bg3.jpg";
+import { useHistory } from "react-router-dom";
 
 const HomePage = () => {
+  const history = useHistory();
+
+  const handleClickStart = () => {
+    history.push("/game");
+  };
+
   return (
     <>
-      <Header title="Pokemon game" descr="This is simple triple triad card game" />
+      <Header title="Pokemon game" descr="This is simple triple triad card game" onClickStart={handleClickStart} />
       <Layout title="Rules" urlBg={background1}>
         <p>
           In the game two players face off against one another, one side playing as "blue", the other as "red" on a 3x3 grid. Each player has five
