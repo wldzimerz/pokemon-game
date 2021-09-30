@@ -1,38 +1,30 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import PokemonCard from "./../../../../Pokemon Card/PokemonCard";
 import Layout from "./../../../../Layout/Layout";
 
-import { FireBaseContext } from "../../../../../context/firebaseContext";
-import { PokemonContext } from "../../../../../context/pokemonContext";
+import { getPokemonsAsync, selectPokemonsData, selectPokemonsLoading, selectedPokemons, handleSelectedPokemons } from "../../../../../store/pokemons";
+
 import s from "./StartPage.module.css";
 
 const StartPage = () => {
-  const firebase = useContext(FireBaseContext);
-  const pokemonsContext = useContext(PokemonContext);
+  const isLoading = useSelector(selectPokemonsLoading);
+  const pokemonsRedux = useSelector(selectPokemonsData);
+  const selectedPokemonsRedux = useSelector(selectedPokemons);
+
+  const dispatch = useDispatch();
   const history = useHistory();
-  const [pokemons, setPokemons] = useState({});
+
+  console.log("isLoading: ", isLoading);
 
   useEffect(() => {
-    firebase.getPokemonSoket((pokemons) => {
-      setPokemons(pokemons);
-    });
+    dispatch(getPokemonsAsync());
+  }, [dispatch]);
 
-    return () => firebase.offPokemonSoket();
-  }, [firebase]);
-
-  const handleOpenCard = (key) => {
-    const pokemon = { ...pokemons[key] };
-    pokemonsContext.onSelectedPokemons(key, pokemon);
-
-    setPokemons((prevState) => ({
-      ...prevState,
-      [key]: {
-        ...prevState[key],
-        selected: !prevState[key].selected,
-      },
-    }));
+  const handleSelectCard = (key, pokemon) => {
+    dispatch(handleSelectedPokemons({ key, pokemon }));
   };
 
   const handleStartGameClick = () => {
@@ -43,30 +35,34 @@ const StartPage = () => {
     <>
       <Layout title="Cards" colorBg="#e2e2e2">
         <div className={s.add}>
-          <button onClick={handleStartGameClick} disabled={Object.keys(pokemonsContext.pokemons).length < 5}>
-            Start Game
+          <p>Choose 5 cards!</p>
+          <button onClick={handleStartGameClick} disabled={Object.keys(selectedPokemonsRedux).length < 5}>
+            Start Game!
           </button>
         </div>
 
         <div className={s.flex}>
-          {Object.entries(pokemons).map(([key, { name, img, id, type, values, selected }]) => (
-            <PokemonCard
-              className={s.card}
-              key={key}
-              name={name}
-              img={img}
-              id={id}
-              type={type}
-              values={values}
-              isActive={true}
-              isSelected={selected}
-              onClickCard={() => {
-                if (Object.keys(pokemonsContext.pokemons).length < 5 || selected) {
-                  handleOpenCard(key);
-                }
-              }}
-            />
-          ))}
+          {Object.entries(pokemonsRedux).map(([key, pokemon]) => {
+            const { name, img, id, type, values, selected } = pokemon;
+            return (
+              <PokemonCard
+                className={s.card}
+                key={key}
+                name={name}
+                img={img}
+                id={id}
+                type={type}
+                values={values}
+                isActive={true}
+                isSelected={selected}
+                onClickCard={() => {
+                  if (Object.keys(selectedPokemonsRedux).length < 5 || selected) {
+                    handleSelectCard(key, pokemon);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
       </Layout>
     </>
