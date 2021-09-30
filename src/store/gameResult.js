@@ -7,8 +7,6 @@ export const slice = createSlice({
   },
   reducers: {
     setWinner: (state, action) => {
-      console.log("🚀 ~ file: gameResult.js ~ line 10 ~ action", action.payload);
-
       return { ...state, winner: action.payload };
     },
   },
