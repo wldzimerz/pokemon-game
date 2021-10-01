@@ -38,7 +38,6 @@ const FinishPage = () => {
 
   const addWonPokemon = (item) => {
     return setWonPokemon({ ...item });
-    // console.log(isSelected);
   };
 
   return (
@@ -72,7 +71,7 @@ const FinishPage = () => {
               values={item.values}
               possession={item.possession}
               img={item.img}
-              isSelected={item.selected}
+              // isSelected={isSelected}
               id={item.id}
               isActive
               onClickCard={() => {

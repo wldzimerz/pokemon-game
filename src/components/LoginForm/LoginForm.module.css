@@ -1,0 +1,13 @@
+.flex {
+  display: flex;
+}
+
+.question {
+  font-size: 22px;
+  margin: auto 0 auto auto;
+}
+
+.question:hover {
+  color: #f300b4;
+  cursor: pointer;
+}
