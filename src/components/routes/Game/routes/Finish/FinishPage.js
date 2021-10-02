@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { FireBaseContext } from "../../../../../context/firebaseContext";
+
+import FirebaseClass from "./../../../../../services/firebase";
 
 import { winner as storeWinner } from "../../../../../store/gameResult";
 import { clearPokemons, selectedPokemons } from "../../../../../store/pokemons";
@@ -11,8 +12,6 @@ import PokemonCard from "../../../../Pokemon Card/PokemonCard";
 import s from "./FinishPage.module.css";
 
 const FinishPage = () => {
-  const firebase = useContext(FireBaseContext);
-
   const selectedPokemonsRedux = useSelector(selectedPokemons);
   const selectedPokemons2Redux = useSelector(selectedPokemons2);
   const winner = useSelector(storeWinner);
@@ -22,6 +21,8 @@ const FinishPage = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const firebase = FirebaseClass;
 
   const handleEndGame = () => {
     if (Object.keys(wonPokemon).length !== 0) {
@@ -37,7 +38,6 @@ const FinishPage = () => {
 
   const addWonPokemon = (item) => {
     return setWonPokemon({ ...item });
-    // console.log(isSelected);
   };
 
   return (
@@ -71,7 +71,7 @@ const FinishPage = () => {
               values={item.values}
               possession={item.possession}
               img={item.img}
-              isSelected={item.selected}
+              // isSelected={isSelected}
               id={item.id}
               isActive
               onClickCard={() => {

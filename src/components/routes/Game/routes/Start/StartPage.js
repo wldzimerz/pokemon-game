@@ -46,6 +46,7 @@ const StartPage = () => {
             const { name, img, id, type, values, selected } = pokemon;
             return (
               <PokemonCard
+                isSelected={Boolean(selectedPokemonsRedux[key])}
                 className={s.card}
                 key={key}
                 name={name}
@@ -54,7 +55,6 @@ const StartPage = () => {
                 type={type}
                 values={values}
                 isActive={true}
-                isSelected={selected}
                 onClickCard={() => {
                   if (Object.keys(selectedPokemonsRedux).length < 5 || selected) {
                     handleSelectCard(key, pokemon);
