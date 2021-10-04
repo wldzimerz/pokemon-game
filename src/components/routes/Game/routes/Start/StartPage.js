@@ -10,14 +10,14 @@ import { getPokemonsAsync, selectPokemonsData, selectPokemonsLoading, selectedPo
 import s from "./StartPage.module.css";
 
 const StartPage = () => {
-  const isLoading = useSelector(selectPokemonsLoading);
+  // const isLoading = useSelector(selectPokemonsLoading);
   const pokemonsRedux = useSelector(selectPokemonsData);
   const selectedPokemonsRedux = useSelector(selectedPokemons);
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  console.log("isLoading: ", isLoading);
+  // console.log("isLoading: ", isLoading);
 
   useEffect(() => {
     dispatch(getPokemonsAsync());

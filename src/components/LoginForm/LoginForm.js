@@ -1,28 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "./Input/Input";
 
 import s from "./LoginForm.module.css";
 
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit, isResetField = false }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAuth, setAuth] = useState(false);
+  const [isAuth, setAuth] = useState(true);
+
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+  }, [isResetField]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     onSubmit &&
       onSubmit({
+        type: isAuth ? "login" : "signup",
         email,
         password,
-        isAuth,
       });
-    setEmail("");
-    setPassword("");
-  };
-
-  const handleClickLogin = () => {
-    setAuth((prevState) => !prevState);
     setEmail("");
     setPassword("");
   };
@@ -37,7 +36,7 @@ const LoginForm = ({ onSubmit }) => {
       </div>
       <div className={s.flex}>
         <button type="submit">{isAuth ? "Sign in" : "Sign up"}</button>
-        <span className={s.question} onClick={handleClickLogin}>
+        <span className={s.question} onClick={() => setAuth(!isAuth)}>
           {isAuth ? "Register" : "Login"}
         </span>
       </div>
