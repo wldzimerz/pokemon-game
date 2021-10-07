@@ -10,23 +10,23 @@ import { clearPokemons2, selectedPokemons2 } from "../../../../../store/pokemons
 import PokemonCard from "../../../../Pokemon Card/PokemonCard";
 
 import s from "./FinishPage.module.css";
+import { selectLocalId } from "./../../../../../store/user";
 
 const FinishPage = () => {
   const selectedPokemonsRedux = useSelector(selectedPokemons);
   const selectedPokemons2Redux = useSelector(selectedPokemons2);
   const winner = useSelector(storeWinner);
+  const localId = useSelector(selectLocalId);
+  console.log(localId);
 
   const [wonPokemon, setWonPokemon] = useState({});
-  // const [isSelected, setSelected] = useState(false);
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const firebase = FirebaseClass;
-
   const handleEndGame = () => {
     if (Object.keys(wonPokemon).length !== 0) {
-      firebase.addPokemon(wonPokemon);
+      FirebaseClass.addPokemon(wonPokemon, localId);
       setWonPokemon({});
       dispatch(clearPokemons());
       dispatch(clearPokemons2());
@@ -59,7 +59,20 @@ const FinishPage = () => {
         })}
       </div>
       <div className={s.button}>
-        <button onClick={handleEndGame}>END GAME</button>
+        <button
+          onClick={() => {
+            if (winner === "player1") {
+              handleEndGame();
+            } else {
+              history.push("/game");
+              setWonPokemon({});
+              dispatch(clearPokemons());
+              dispatch(clearPokemons2());
+            }
+          }}
+        >
+          END GAME
+        </button>
       </div>
       <div className={s.flex}>
         {Object.values(selectedPokemons2Redux).map((item) => {

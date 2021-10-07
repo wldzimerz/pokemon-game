@@ -60,7 +60,7 @@ const BoardPage = () => {
     }
 
     setPlayer2(() => {
-      return selectedPokemons2Redux.map((item) => ({
+      return selectedPokemons2Redux?.map((item) => ({
         // ?.map
         ...item,
         possession: "red",
