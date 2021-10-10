@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PokemonCard from "./../../../../Pokemon Card/PokemonCard";
 import PlayerBoard from "./component/PlayerBoard";
+import Result from "./component/Result/Result";
+import ArrowChoice from "./component/ArrowChoice/ArrowChoice";
+import request from "./../../../../../services/request";
 
 import { selectedPokemons } from "../../../../../store/pokemons";
 import { getPokemons2Async, selectedPokemons2 } from "../../../../../store/pokemons2";
@@ -26,82 +29,188 @@ const counterWin = (board, player1, player2) => {
   return [player1Count, player2Count];
 };
 
+const returnBoard = (board) => {
+  return board.map((item, index) => {
+    let card = null;
+    if (typeof item === "object") {
+      card = {
+        ...item.poke,
+        possession: item.holder === "p1" ? "blue" : "red",
+      };
+    }
+
+    return {
+      position: index + 1,
+      card,
+    };
+  });
+};
+
 const BoardPage = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const selectedPokemonsRedux = useSelector(selectedPokemons);
+
+  if (Object.keys(selectedPokemonsRedux).length === 0) {
+    history.replace("/game");
+  }
+
   const selectedPokemons2Redux = useSelector(selectedPokemons2);
 
+  const [result, setResult] = useState(null);
+  const [turn, setTurn] = useState(0);
   const [board, setBoard] = useState([]);
-  const [player2, setPlayer2] = useState([]);
-  const [choiseCard, setChoiseCard] = useState(null);
-  const [steps, setSteps] = useState(0);
   const [player1, setPlayer1] = useState(() => {
     return Object.values(selectedPokemonsRedux).map((item) => ({
       ...item,
       possession: "blue",
     }));
   });
-
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const [player2, setPlayer2] = useState([]);
+  const [choiseCard, setChoiseCard] = useState(null);
+  const [steps, setSteps] = useState(0);
+  const [serverBoard, setServerBoard] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [aiFirstTurn, setAiFirstTurn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const boardResponse = await fetch("https://reactmarathon-api.netlify.app/api/board");
-      const boardRequest = await boardResponse.json();
+      const boardRequest = await request.getBoard();
       setBoard(boardRequest.data);
+
+      setPlayer2(() => {
+        return selectedPokemons2Redux?.map((item) => ({
+          // ?.map
+          ...item,
+          possession: "red",
+        }));
+      });
     };
 
+    setTimeout(() => {
+      // const side = Math.ceil(Math.random() * 2);
+      const side = 1;
+      setTurn(side);
+      if (side === 2) {
+        setAiFirstTurn(true);
+        // console.log("aiFirstTurn1: ", aiFirstTurn);
+      }
+    }, 2000);
+
     fetchData();
-  }, []);
+  }, [selectedPokemons2Redux]);
 
   useEffect(() => {
     if (!selectedPokemons2Redux.length) {
       dispatch(getPokemons2Async());
     }
-
-    setPlayer2(() => {
-      return selectedPokemons2Redux?.map((item) => ({
-        // ?.map
-        ...item,
-        possession: "red",
-      }));
-    });
   }, [selectedPokemons2Redux, dispatch]);
 
-  if (Object.keys(selectedPokemonsRedux).length === 0) {
-    history.replace("/game");
-  }
+  // const params = {
+  //   currentPlayer: "p2",
+  //   hands: {
+  //     p1: player1,
+  //     p2: player2,
+  //   },
+  //   move: null,
+  //   board: serverBoard,
+  // };
+
+  // useEffect(
+  //   (position) => {
+  //     const params = {
+  //       currentPlayer: aiFirstTurn ? "p2" : "p1",
+  //       hands: {
+  //         p1: player1,
+  //         p2: player2,
+  //       },
+  //       move: aiFirstTurn
+  //         ? null
+  //         : {
+  //             poke: {
+  //               ...choiseCard,
+  //             },
+  //             position,
+  //           },
+  //       board: serverBoard,
+  //     };
+
+  //     request.game(params);
+  //   },
+  //   [aiFirstTurn]
+  // );
 
   const handleClickBoardPlate = async (position) => {
-    if (choiseCard) {
+    // console.log("aiFirstTurn click: ", aiFirstTurn);
+    if (typeof choiseCard === "object") {
       const params = {
-        position,
-        card: choiseCard,
-        board,
-      };
-      const res = await fetch("https://reactmarathon-api.netlify.app/api/players-turn", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        currentPlayer: aiFirstTurn ? "p2" : "p1",
+        hands: {
+          p1: player1,
+          p2: player2,
         },
-        body: JSON.stringify(params),
-      });
+        move: aiFirstTurn
+          ? null
+          : {
+              poke: {
+                ...choiseCard,
+              },
+              position,
+            },
+        board: serverBoard,
+      };
 
-      const request = await res.json();
+      const game = await request.game(params);
+      // console.log("game: ", game);
 
       if (choiseCard.player === 1) {
         setPlayer1((prevState) => prevState.filter((item) => item.id !== choiseCard.id));
       }
-      if (choiseCard.player === 2) {
-        setPlayer2((prevState) => prevState.filter((item) => item.id !== choiseCard.id));
-      }
 
-      setBoard(request.data);
-      setSteps((prevState) => {
-        const count = prevState + 1;
-        return count;
-      });
+      setBoard((prevState) =>
+        prevState.map((item) => {
+          if (item.position === position) {
+            return {
+              ...item,
+              card: choiseCard,
+            };
+          }
+          return item;
+        })
+      );
+
+      setBoard(returnBoard(game.oldBoard));
+
+      setSteps((prevState) => prevState + 1);
+
+      if (game.move !== null) {
+        const idAi = game.move.poke.id;
+
+        setTimeout(() => {
+          setPlayer2((prevState) =>
+            prevState.map((item) => {
+              if (item.id === idAi) {
+                return {
+                  ...item,
+                  selected: true,
+                };
+              }
+
+              return item;
+            })
+          );
+        }, 1000);
+
+        setTimeout(() => {
+          setPlayer2(() => game.hands.p2.pokes.map((item) => item.poke));
+          setServerBoard(game.board);
+          setBoard(returnBoard(game.board));
+          setSteps((prevState) => prevState + 1);
+          setTurn(1);
+        }, 2000);
+      }
     }
+    setTurn(2);
   };
 
   useEffect(() => {
@@ -109,23 +218,26 @@ const BoardPage = () => {
       const [count1, count2] = counterWin(board, player1, player2);
 
       if (count1 > count2) {
-        alert("WIN");
+        setResult("win");
         dispatch(setWinner("player1"));
       } else if (count1 < count2) {
-        alert("LOSE");
+        setResult("lose");
         dispatch(setWinner("player2"));
       } else {
-        alert("DRAW");
+        setResult("draw");
         dispatch(setWinner());
       }
-      history.replace("/game/finish");
+
+      setTimeout(() => history.replace("/game/finish"), 3000);
     }
   }, [steps, board, player1, player2, dispatch, history]);
 
   return (
     <div className={s.root}>
+      <Result type={result} />
+      <ArrowChoice side={turn} />
       <div className={s.playerOne}>
-        <PlayerBoard player={1} cards={player1} onClickCard={(card) => setChoiseCard(card)} />
+        <PlayerBoard player={1} cards={player1} onClickCard={(card) => setChoiseCard(card)} turnPlayer={turn} />
       </div>
       <div className={s.board}>
         {board.map((item) => (
@@ -135,7 +247,7 @@ const BoardPage = () => {
         ))}
       </div>
       <div className={s.playerTwo}>
-        <PlayerBoard player={2} cards={player2} onClickCard={(card) => setChoiseCard(card)} />
+        <PlayerBoard player={2} cards={player2} onClickCard={(card) => setChoiseCard(card)} turnPlayer={turn} />
       </div>
     </div>
   );

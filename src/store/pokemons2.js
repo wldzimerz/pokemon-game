@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import request from "./../services/request";
 
 export const slice = createSlice({
   name: "pokemons2",
@@ -44,8 +45,9 @@ export const getPokemons2Async = () => async (dispatch) => {
   dispatch(fetchPokemons());
 
   try {
-    const player2Response = await fetch("https://reactmarathon-api.netlify.app/api/create-player");
-    const player2Request = await player2Response.json();
+    const player2Request = await request.gameStart({
+      pokemons: Object.values(selectedPokemons2),
+    });
     dispatch(fetchPokemonsResolve({ data: player2Request, pokemons: player2Request.data }));
   } catch (error) {
     dispatch(fetchPokemonsReject("Error"));
