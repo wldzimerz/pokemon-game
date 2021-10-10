@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PokemonCard from "./../../../../Pokemon Card/PokemonCard";
 import Layout from "./../../../../Layout/Layout";
 
-import { getPokemonsAsync, selectPokemonsData, selectPokemonsLoading, selectedPokemons, handleSelectedPokemons } from "../../../../../store/pokemons";
+import { getPokemonsAsync, selectPokemonsData, selectedPokemons, handleSelectedPokemons } from "../../../../../store/pokemons";
 
 import s from "./StartPage.module.css";
 
