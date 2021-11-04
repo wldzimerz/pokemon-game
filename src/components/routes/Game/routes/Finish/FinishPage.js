@@ -11,13 +11,13 @@ import PokemonCard from "../../../../Pokemon Card/PokemonCard";
 
 import s from "./FinishPage.module.css";
 import { selectLocalId } from "./../../../../../store/user";
+import { NotificationManager } from "react-notifications";
 
 const FinishPage = () => {
   const selectedPokemonsRedux = useSelector(selectedPokemons);
   const selectedPokemons2Redux = useSelector(selectedPokemons2);
   const winner = useSelector(storeWinner);
   const localId = useSelector(selectLocalId);
-  console.log(localId);
 
   const [wonPokemon, setWonPokemon] = useState({});
 
@@ -32,7 +32,7 @@ const FinishPage = () => {
       dispatch(clearPokemons2());
       history.push("/game");
     } else {
-      alert("Choose a pokemon!");
+      NotificationManager.error("Choose your opponent's pokemon!");
     }
   };
 

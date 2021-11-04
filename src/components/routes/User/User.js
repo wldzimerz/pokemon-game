@@ -1,3 +1,4 @@
+import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../store/user";
 
@@ -8,6 +9,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 
 const User = () => {
   const userData = useSelector(selectUser);
+  const history = useHistory();
 
   const getCreateDate = () => {
     const createDate = new Date(Number(userData.createdAt));
@@ -18,12 +20,13 @@ const User = () => {
 
   const logOut = () => {
     localStorage.removeItem("idToken");
+    history.push("/");
     window.location.reload();
   };
 
   return (
     <>
-      <div className={s.wrapper}>
+      <div className={s.container}>
         <p>Account created: {getCreateDate()}</p>
         <p>User E-mail: {userData.email}</p>
         <p>LocalID: {userData.localId}</p>
